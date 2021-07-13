@@ -12,6 +12,7 @@ tf.compat.v1.disable_eager_execution()
 
 class ConvNetMalaria():
     def __init__(self, num_classes=2):
+
         self.conv1 = layers.Conv2D(filters=64, kernel_size=(5,5), activation=tf.nn.relu)
         self.conv2 = layers.Conv2D(filters=64, kernel_size=(3,3), activation=tf.nn.relu)
         self.conv3 = layers.Conv2D(filters=128, kernel_size=(3,3), 

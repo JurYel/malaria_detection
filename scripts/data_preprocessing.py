@@ -5,7 +5,7 @@ import tensorflow as tf
 from helper_functions import *
 
 class MalariaPreprocessing():
-    def __init__(self, ds_malaria, ds_info, buffer_size, batch_size):
+    def __init__(self, ds_malaria, ds_info, buffer_size=27558, batch_size=64):
         self.ds_malaria = ds_malaria
         self.ds_info = ds_info
         self.buffer_size = buffer_size
