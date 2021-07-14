@@ -33,6 +33,10 @@ class MalariaPreprocessing():
         test_data = train_and_validation_data.take(num_test_samples)
         validation_data = train_and_validation_data.take(num_validation_samples)
 
+        train_data = train_data.batch(self.batch_size)
+        test_data = test_data.batch(num_test_samples)
+        validation_data = validation_data.batch(num_validation_samples)
+
         return train_data, test_data, validation_data
 
     def config(self):

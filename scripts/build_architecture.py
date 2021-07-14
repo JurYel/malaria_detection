@@ -1,11 +1,11 @@
-import tensorflow as tf
 import numpy as np
 from tensorflow import keras
 from tensorflow.keras import layers
 from keras.utils import plot_model
 from matplotlib import image as mpimg
 from matplotlib import pyplot as plt
-from tensorflow.keras import backend as K
+from tensorflow.compat.v1.keras import backend as K
+import tensorflow as tf
 from helper_functions import *
 
 tf.compat.v1.disable_eager_execution()
@@ -19,20 +19,22 @@ class ConvNetMalaria():
                                     activation=tf.nn.relu,
                                     padding='same'
                                 )
-        self.maxpool = layers.MaxPooling2D(pool_size=(2,2))
+        self.maxpool1 = layers.MaxPooling2D(pool_size=(2,2))
+        self.maxpool2 = layers.MaxPooling2D(pool_size=(2,2))
+        self.maxpool3 = layers.MaxPooling2D(pool_size=(2,2))
         self.flatten = layers.Flatten()
         self.out = layers.Dense(num_classes)
 
     def build(self, shape=(100, 100, 1)):
         inputs = keras.Input(shape=shape, name='img')
         x = self.conv1(inputs)
-        x = self.maxpool(x)
+        x = self.maxpool1(x)
 
         x = self.conv2(x)
-        x = self.maxpool(x)
+        x = self.maxpool2(x)
 
         x = self.conv3(x)
-        x = self.maxpool(x)
+        x = self.maxpool3(x)
 
         x = self.flatten(x)
         output = self.out(x)
