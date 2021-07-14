@@ -10,7 +10,8 @@ class MalariaPreprocessing():
         self.ds_info = ds_info
         self.buffer_size = buffer_size
         self.batch_size = batch_size
-
+        self.base_path = "models/malaria_detection/"
+        self.num_epochs = 20
         self.ds_train = ds_malaria['train']
 
     def preprocess(self, test_split=0.2, val_split=0.1, color_mode='grayscale'):

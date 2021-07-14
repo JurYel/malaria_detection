@@ -3,15 +3,16 @@ import tensorflow as tf
 import os
 import seaborn as sns
 import matplotlib.pyplot as plt
+import tensorflow_datasets as tfds
+import pickle
 from sklearn.metrics import confusion_matrix, classification_report
 from tensorflow import keras
+from data_preprocessing import MalariaPreprocessing
 
 class PerformanceAnalysis():
-    def __init__(self, base_path="models/malaria_detection/", 
-                classes=['parasitized','uninfected'], conv_model=None):
-        self.base_path = base_path
+    def __init__(self, classes=['parasitized','uninfected']):
+        
         self.classes = classes
-        self.conv_model = conv_model
 
     def model_plot_performance(self, model_hist, style='ggplot'):
         accuracy = model_hist['accuracy']
@@ -91,3 +92,30 @@ class PerformanceAnalysis():
         print(classification_report(self.classes, y_pred, target_names=classes))
 
         return
+
+
+if __name__ == '__main__':
+    ds_malaria, ds_info = tfds.load("malaria", with_info=True, as_supervised=True)
+
+    config = MalariaPreprocessing(ds_malaria, ds_info)
+    _, _ , validation_data = config.preprocess(color_mode='grayscale')
+
+    model = keras.models.load_model(config.base_path)
+    
+    pickle_path = os.path.join(config.base_path, "malaria_history.pickle")
+    pickle_in = open(pickle_path, "rb")
+    saved_history = pickle.load(pickle_in)
+    pickle_in.close()
+
+    perf_analysis = PerformanceAnalysis(conv_model=model)
+    perf_analysis.model_plot_performance(saved_history)
+
+    nb_validation_samples = validation_data.cardinality()
+    y_pred_raw = model.predict(validation_data, 
+                        validation_steps=(nb_validation_samples / config.batch_size),
+                        verbose=1)
+
+    y_pred = np.argmax(y_pred_raw, axis=1)
+
+    perf_analysis.display_cm(y_pred)
+    perf_analysis.display_classification_report(y_pred)
